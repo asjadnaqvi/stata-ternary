@@ -10,6 +10,10 @@
 
 ---
 
+![ternary_banner](https://github.com/user-attachments/assets/1c0d3590-2469-41b0-88f4-6d8099fb8f75)
+
+
+
 # ternary v1.0
 (28 Aug 2024)
 
@@ -62,7 +66,7 @@ graph set window fontface "Arial Narrow"
 The syntax for the latest version is as follows:
 
 ```stata
-
+ternary varL varR varB [if] [in], [ cuts(num) zoom fill points lines labels colorL(str) colorR(str) colorB(str) lwidth(str) msize(str) mcolor(str) mlcolor(str) mlwidth(str) labcolor(str) ticksize(str) * ]
 ```
 
 See the help file `help ternary` for details.
@@ -70,12 +74,10 @@ See the help file `help ternary` for details.
 The most basic use is as follows:
 
 ```
-ternary numvar, by(variable(s))
+ternary varL varR varB
 ```
 
-
-where `numvar` is a numeric variable, and `by()` is upto three string variables, ordered by higher aggregated levels to finer units. The algorithm changes the layout based on `xsize()` and `ysize()`. See examples below.
-
+representing left, right and bottom variables respectively.
 
 
 ## Citation guidelines
@@ -122,8 +124,6 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-ternary/issues) to re
 
 
 ## Change log
-
-
 
 **v1.0 (28 Aug 2024)**
 - First release.
