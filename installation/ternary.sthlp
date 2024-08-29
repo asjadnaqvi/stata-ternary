@@ -8,13 +8,13 @@
 {title:ternary}: A Stata package for plotting three variables in a triangle. 
 
 {p 4 4 2}
-The command is still {it:beta} and lacks full set of features and checks. 
-Layers are auto detected to add up to 1 (fractions) or a 100 (percentages). If neither of it is true, then please normalize the data points before running the command. This will be enhanced in later releases.
-Nick Cox's {stata help triplot:triplot} (Cox 2009) provided the base code for the {browse "https://en.wikipedia.org/wiki/Barycentric_coordinate_system":Barycentric projection}.
+The command is currently {it:beta} and is actively being updated. 
+Layers are auto detected to either add up to 1 (fractions) or a 100 (percentages). If neither of the conditions is true, then please normalize the data points before running the command.
+Nick Cox's {stata help triplot:triplot} (Cox 2009) provided inspiration for this package.
 
 {marker syntax}{title:Syntax}
-{p 8 15 2}
 
+{p 8 15 2}
 {cmd:ternary} {it:varL varR varB} {ifin}, 
                 {cmd:[} {cmd:cuts}({it:num}) {cmd:zoom} {cmd:fill} {cmd:points} {cmd:lines} {cmd:labels} {cmd:colorL}({it:str}) {cmd:colorR}({it:str}) {cmd:colorB}({it:str})
                   {cmd:lwidth}({it:str}) {cmd:msize}({it:str}) {cmd:malpha}({it:num}) {cmd:mcolor}({it:str}) {cmd:mlcolor}({it:str}) {cmd:mlwidth}({it:str}) *                                  
@@ -22,6 +22,10 @@ Nick Cox's {stata help triplot:triplot} (Cox 2009) provided the base code for th
 
 {p 4 4 2}
 The options are described as follows:
+
+{synoptset 36 tabbed}{...}
+{synopthdr}
+{synoptline}
 
 {p2coldent : {opt ternary varL varR varB}}The order of the variables is {it:Left}, {it:Right} and {it:Bottom}.{p_end}
 
@@ -31,7 +35,7 @@ The options are described as follows:
 the data points are bunched in very few triangles. Rather than increasing the cuts to show more variation, {opt zoom} rescales the axes while keeping the cuts the same.{p_end}
 
 
-{it:Colors}
+{p 4 4 2}{it:{ul:Colors}}
 
 {p2coldent : {opt fill}}Add graduated colors to the triangles. See below for color options.{p_end}
 
@@ -49,7 +53,7 @@ The convex combinations of all the in-between colors are auto generated. Please 
 as {it:O(n)=n^2}. So avoid going over 10 cuts which in any case renders the information meaningless as colors become indistinguishable. Here lower numbers are better.{p_end}
 
 
-{it:Markers and lines}
+{p 4 4 2}{it:{ul:Markers and lines}}
 
 {p2coldent : {opt lwidth(str)}}Lines width. Default is {opt lwidth(0.25)}.{p_end}
 
@@ -64,6 +68,9 @@ as {it:O(n)=n^2}. So avoid going over 10 cuts which in any case renders the info
 {p2coldent : {opt mlwidth(str)}}Marker outline width. Default is {opt mlwidth(0.1)}.{p_end}
 
 {p2coldent : {opt *}}All other twoway options not elsewhere specified.{p_end}
+
+{synoptline}
+{p2colreset}{...}
 
 {title:Dependencies}
 
@@ -91,7 +98,7 @@ Repository   : {browse "https://github.com/asjadnaqvi/stata-ternary":GitHub}
 Keywords     : Stata, graph, ternary, triplot
 License      : {browse "https://opensource.org/licenses/MIT":MIT}
 
-Authors      : {browse "https://github.com/asjadnaqvi":Asjad Naqvi}
+Author       : {browse "https://github.com/asjadnaqvi":Asjad Naqvi}
 E-mail       : asjadnaqvi@gmail.com
 Twitter/X    : {browse "https://x.com/AsjadNaqvi":@AsjadNaqvi}
 
@@ -128,5 +135,5 @@ Naqvi, A. (2024). Stata package "ternary" version 1.0. Release date 28 August 20
 {title:Other visualization packages}
 
 {psee}
-    {helpb arcplot}, {helpb alluvial}, {helpb bimap}, {helpb bumparea}, {helpb bumpline}, {helpb circlebar}, {helpb circlepack}, {helpb clipgeo}, {helpb delaunay}, {helpb joyplot}, {helpb marimekko}, {helpb polarspike}, 
-	{helpb sankey}, {helpb schemepack}, {helpb spider}, {helpb splineplot}, {helpb streamplot}, {helpb sunburst}, {helpb ternary}, {helpb treecluster}, {helpb treemap}, {helpb trimap}, {helpb waffle}
+    {helpb arcplot}, {helpb alluvial}, {helpb bimap}, {helpb bumparea}, {helpb bumpline}, {helpb circlebar}, {helpb circlepack}, {helpb clipgeo}, {helpb delaunay}, {helpb joyplot}, 
+	{helpb marimekko}, {helpb polarspike}, {helpb sankey}, {helpb schemepack}, {helpb spider}, {helpb splinefit}, {helpb streamplot}, {helpb sunburst}, {helpb treecluster}, {helpb treemap}, {helpb waffle}

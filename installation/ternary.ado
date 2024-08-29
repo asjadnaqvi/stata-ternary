@@ -136,24 +136,15 @@ qui {
 	}	
 
 
-
-	local xL = 0                                /* triangle coordinates */
-	local xR = 1
-	local yB = 0
-
-	local width = `xR' - `xL'
-	local height = `width' * sqrt(3)/2	
-	
-	gen double _yvar = `yB' + `height' * _R 
-	gen double _xvar = `xR' - `width' * (_R/2   + _L) 
+	// barycentric coordinates	
+	gen double _yvar = _R * sqrt(3) / 2 
+	gen double _xvar = 1 - (_R/2 + _L) 
 
 
 	// add rows if required
 	if _N < `=`cuts' + 5' set obs `=`cuts' + 5'
 	
 	local diff = 1 / `cuts'
-	
-	di "`diff'"
 	
 	*** bottom
 	gen double yB = .
@@ -371,11 +362,8 @@ qui {
 			}
 		}			
 		
-
-		
 		
 		merge m:1 tri_id using `_points'
-		
 		
 		sort _seq	
 		drop if _m==2
