@@ -129,12 +129,27 @@ ternary y15prop y64prop y99prop
 <img src="/figures/ternary1.png" width="100%">
 
 
+Re arrange the variables:
+
 ```
 ternary y64prop y99prop y15prop
 ```
 
 <img src="/figures/ternary2.png" width="100%">
 
+
+Test `ternary` with fractions:
+
+```stata
+gen double y15prop2 = y15prop / 100
+gen double y64prop2 = y64prop / 100
+gen double y99prop2 = y99prop / 100
+
+
+ternary y64prop2 y99prop2 y15prop2
+```
+
+<img src="/figures/ternary2_1.png" width="100%">
 
 ### Line color
 
@@ -173,7 +188,6 @@ ternary y64prop y99prop y15prop, fill cuts(6)
 ```
 
 <img src="/figures/ternary7.png" width="100%">
-
 
 
 ```
