@@ -113,8 +113,157 @@ Naqvi, A. (2024). Stata package "ternary" version 1.0. Release date 28 August 20
 Set up the data:
 
 ```stata
+use "https://github.com/asjadnaqvi/stata-ternary/blob/main/data/tridata.dta?raw=true", clear
+
+lab var y15prop "Age 0-14"
+lab var y64prop "Age 15-64"
+lab var y99prop "Age 65+"
+```
+
+Test a basic figure
 
 ```
+ternary y15prop y64prop y99prop 
+```
+
+<img src="/figures/ternary1.png" width="100%">
+
+
+```
+ternary y64prop y99prop y15prop
+```
+
+<img src="/figures/ternary2.png" width="100%">
+
+
+### Line color
+
+
+```
+ternary y64prop y99prop y15prop, fill
+```
+
+<img src="/figures/ternary3.png" width="100%">
+
+
+```
+ternary y64prop y99prop y15prop, fill lcolor(black)
+```
+
+<img src="/figures/ternary4.png" width="100%">
+
+
+### Cuts
+
+```
+ternary y64prop y99prop y15prop, fill cuts(3)
+```
+
+<img src="/figures/ternary5.png" width="100%">
+
+
+```
+ternary y64prop y99prop y15prop, fill cuts(10)
+```
+
+<img src="/figures/ternary6.png" width="100%">
+
+```
+ternary y64prop y99prop y15prop, fill cuts(6)
+```
+
+<img src="/figures/ternary7.png" width="100%">
+
+
+
+```
+ternary y64prop y99prop y15prop, fill cuts(6) zoom
+```
+
+<img src="/figures/ternary7_1.png" width="100%">
+
+```
+ternary y64prop y99prop y15prop, fill cuts(6) zoom msize(2.5) mc(black%60)
+```
+
+<img src="/figures/ternary7_2.png" width="100%">
+
+```
+ternary y64prop y99prop y15prop, fill cuts(8) zoom msize(2.5) mc(black%70) lw(0.08) labcolor(gs6)
+```
+
+<img src="/figures/ternary7_banner.png" width="100%">
+
+
+### fill colors
+
+```
+ternary y64prop y99prop y15prop, fill zoom cuts(6) ///
+	colorB(lime) 
+```
+
+<img src="/figures/ternary8.png" width="100%">
+
+
+```
+ternary y64prop y99prop y15prop, fill zoom cuts(6) ///
+	colorB(red) colorL(green) colorR(blue)
+```
+
+<img src="/figures/ternary9.png" width="100%">
+
+```
+ternary y64prop y99prop y15prop, fill zoom cuts(4) ///
+	colorB(red) colorL(green) colorR(blue) mcolor(white%60) mlc(black) msize(3)	
+```
+
+<img src="/figures/ternary10.png" width="100%">
+
+### other color palettes
+
+```
+ternary y64prop y99prop y15prop, points zoom cuts(6)
+```
+
+<img src="/figures/ternary11.png" width="100%">
+
+```
+ternary y64prop y99prop y15prop, fill points zoom cuts(6)
+```
+
+<img src="/figures/ternary12.png" width="100%">
+
+```
+ternary y64prop y99prop y15prop, points zoom cuts(6) lw(0.05) msize(2.5)
+```
+
+<img src="/figures/ternary13.png" width="100%">
+
+
+```
+ternary y64prop y99prop y15prop, lines labels zoom cuts(6) msize(2.5) points malpha(60)
+```
+
+<img src="/figures/ternary14.png" width="100%">
+
+```
+ternary y64prop y99prop y15prop, lines labels zoom cuts(6) msize(2.5) 
+```
+
+<img src="/figures/ternary15.png" width="100%">
+
+
+```
+ternary y64prop y99prop y15prop, lines labels zoom cuts(6) msize(2.5) mlc(black) mc(white%60)
+```
+
+<img src="/figures/ternary16.png" width="100%">
+
+```
+ternary y64prop y99prop y15prop, lines labels zoom cuts(6) msize(2.5) mlc(black) mc(white%70) lw(0.3) msym(triangle)
+```
+
+<img src="/figures/ternary17.png" width="100%">
 
 
 
