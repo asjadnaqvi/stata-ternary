@@ -151,7 +151,7 @@ ternary y64prop2 y99prop2 y15prop2
 
 <img src="/figures/ternary2_1.png" width="100%">
 
-### Line color
+### Colors
 
 
 ```
@@ -209,7 +209,7 @@ ternary y64prop y99prop y15prop, fill cuts(8) zoom msize(2.5) mc(black%70) lw(0.
 <img src="/figures/ternary7_banner.png" width="100%">
 
 
-### fill colors
+### Additional options
 
 ```
 ternary y64prop y99prop y15prop, fill zoom cuts(6) ///
