@@ -113,7 +113,7 @@ Naqvi, A. (2024). Stata package "ternary" version 1.0. Release date 28 August 20
 Set up the data:
 
 ```stata
-use "https://github.com/asjadnaqvi/stata-ternary/blob/main/data/tridata.dta?raw=true", clear
+use "https://github.com/asjadnaqvi/stata-ternary/blob/main/data/NUTS3_pop.dta?raw=true", clear
 
 lab var y15prop "Age 0-14"
 lab var y64prop "Age 15-64"
