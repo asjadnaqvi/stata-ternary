@@ -17,7 +17,7 @@ Nick Cox's {stata help triplot:triplot} (Cox 2009) provided inspiration for this
 {p 8 15 2}
 {cmd:ternary} {it:varL varR varB} {ifin}, 
                 {cmd:[} {cmd:cuts}({it:num}) {cmd:zoom} {cmd:fill} {cmd:points} {cmd:lines} {cmd:labels} {cmd:colorL}({it:str}) {cmd:colorR}({it:str}) {cmd:colorB}({it:str})
-                  {cmd:lwidth}({it:str}) {cmd:msize}({it:str}) {cmd:malpha}({it:num}) {cmd:mcolor}({it:str}) {cmd:mlcolor}({it:str}) {cmd:mlwidth}({it:str}) *                                  
+                  {cmdab:lw:idth}({it:str}) {cmdab:msym:bol}({it:str}) {cmd:msize}({it:str}) {cmdab:mc:olor}({it:str}) {cmdab:mlc:olor}({it:str}) {cmdab:mlw:idth}({it:str}) {cmdab:labc:olor}({it:str}) {cmdab:ticks:ize}({it:str}) *                                  
                 {cmd:]}
 
 {p 4 4 2}
@@ -55,17 +55,25 @@ as {it:O(n)=n^2}. So avoid going over 10 cuts which in any case renders the info
 
 {p 4 4 2}{it:{ul:Markers and lines}}
 
-{p2coldent : {opt lwidth(str)}}Lines width. Default is {opt lwidth(0.25)}.{p_end}
+{p2coldent : {opt lw:idth(str)}}Line width. Default is {opt lwidth(0.15)}.{p_end}
+
+{p2coldent : {opt lc:olor(str)}}Line color. Default is {opt lcolor(gs8)}. If {opt fill} is used then it defaults to {lcolor(white)}.{p_end}
+
+{p2coldent : {opt labc:olor(str)}}Label color. Default is {opt lcolor(black)}. Also affects tick colors.{p_end}
+
+{p2coldent : {opt ticks:ize(str)}}Axes tick size. Default is {opt ticks(1)}.{p_end}
+
+{p2coldent : {opt msym:bol(str)}}Marker symbol. Default is {opt msym(circle)}.{p_end}
 
 {p2coldent : {opt msize(str)}}Marker size. Default is {opt msize(1.5)}.{p_end}
 
-{p2coldent : {opt malpha(str)}}Marker fill intensity. Default is {opt malpha(90)} or 90% fill.{p_end}
+{p2coldent : {opt malpha(str)}}Marker fill intensity if the options {opt points} is used. Default is {opt malpha(90)} or 90% fill. For simple points use for example {opt mcolor(%50)}.{p_end}
 
-{p2coldent : {opt mcolor(str)}}Marker color if the option {opt points} is not specified. Default is {opt mcolor(black)}.{p_end}
+{p2coldent : {opt mc:olor(str)}}Marker color if the option {opt points} is not specified. Default is {opt mcolor(black)}.{p_end}
 
-{p2coldent : {opt mlcolor(str)}}Marker outline color. Default is {opt mlcolor(white)}.{p_end}
+{p2coldent : {opt mlc:olor(str)}}Marker outline color. Default is {opt mlcolor(white)}.{p_end}
 
-{p2coldent : {opt mlwidth(str)}}Marker outline width. Default is {opt mlwidth(0.1)}.{p_end}
+{p2coldent : {opt mlw:idth(str)}}Marker outline width. Default is {opt mlwidth(0.1)}.{p_end}
 
 {p2coldent : {opt *}}All other twoway options not elsewhere specified.{p_end}
 

@@ -1,7 +1,6 @@
 *! ternary v1.0 (28 Aug 2024)
 *! Asjad Naqvi (asjadnaqvi@gmail.com)
 
-
 * v1.0 (28 Aug 2024) : Beta release
 
 
@@ -10,8 +9,8 @@ program ternary, sortpreserve
 	version 15 
 	
 	syntax varlist(min=3 max=3 numeric) [if] [in]  ///
-		[ , cuts(real 5) showlabel LColor(string) LWidth(string) format(str)  ] ///
-		[ msize(string) malpha(real 90) MLColor(string) MLWIDth(string) MColor(string) ]	///
+		[ , cuts(real 5) showlabel LColor(string) LWidth(string) format(str)   ] ///
+		[ msize(string) malpha(real 90) MLColor(string) MLWIDth(string) MColor(string) MSYMbol(string) TICKSize(string) LABColor(string) ]	///
 		[ colorR(string) colorL(string) colorB(string)  ] ///
 		[ fill points lines labels 	 ]	///
 		[ zoom  * ]
@@ -52,7 +51,7 @@ program ternary, sortpreserve
 
 
 	
-qui {	
+quietly {	
 	preserve
 	
 	keep if `touse'
@@ -182,13 +181,12 @@ qui {
 	gen double xR_spike = .
 	
 	gen _Rlab = ""
-	
-	
+
 	forval i = 1/`=`cuts' + 1' {
 	
 		local myval = (`i' - 1) / `cuts'
 		
-		replace yR = `myval' * sqrt(3) / 2 				in `i'
+		replace yR = `myval' * sqrt(3) / 2 			in `i'
 		replace xR = 1 - (yR / tan(60 * _pi / 180)) in `i'
 		
 		
@@ -197,14 +195,14 @@ qui {
 				replace _Rlab = string( ((1 - `mymin')*`myval' + `mymin') * `normlvl' , "`format'") in `i'
 			}
 			else {
-				replace _Rlab = string( `myval' * (1 - `mymin') * `normlvl', "`format'") in `i'
+				replace _Rlab = string( (`myval' * (1 - `mymin') ) * `normlvl', "`format'") in `i'
 			}
 		}
 		else {
 			replace _Rlab = string(`myval' * `normlvl', "`format'") in `i'
 		}
 		
-		replace yR_spike = (1 - `myval') * sqrt(3) / 2 				in `i'
+		replace yR_spike = (1 - `myval') * sqrt(3) / 2 			in `i'
 		replace xR_spike = 1 - yR_spike / tan(60 * _pi / 180) 	in `i'		
 		
 	}
@@ -220,23 +218,24 @@ qui {
 		
 		local myval = (`i' - 1) / `cuts'
 		
-		replace yL = `myval' * sqrt(3) / 2 				in `i'
+		
+		
+		replace yL = `myval' * sqrt(3) / 2 			in `i'
 		replace xL = yL / tan(60 * _pi / 180) 		in `i'
 		
 		
 		if "`zoom'" != "" {
 			if `myvar' == _L {
-				replace _Llab = string( ((1 - `mymin')*`myval' + `mymin') * `normlvl' , "`format'") in `i'
+				replace _Llab = string( ((1 - `mymin')*(1 - `myval') + `mymin') * `normlvl' , "`format'") in `i'
 			}
 			else {
-				replace _Llab = string( ((1 - `myval')*`mymin') * `normlvl' , "`format'") in `i'
+				replace _Llab = string( ((1 - `myval')*(1 - `mymin')) * `normlvl' , "`format'") in `i'
 			}
 		}
 		else {
 			replace _Llab = string( (1 - `myval') * `normlvl' , "`format'") in `i'
 		}		
 	}
-	
 	
 	
 	// generate the title labels
@@ -266,13 +265,26 @@ qui {
 	**** return color triangles
 	
 
-	if "`msize'" == "" 		local msize 1.5
-	if "`mcolor'" == "" 	local mcolor black
-	if "`mlcolor'" == "" 	local mlcolor white
+	if "`msymbol'" == "" 	local msymbol circle
+	if "`msize'"   == "" 	local msize   1.5
+	if "`mcolor'"  == "" 	local mcolor  white
+	if "`mlcolor'" == "" 	local mlcolor black
 	if "`mlwidth'" == "" 	local mlwidth 0.1
+	if "`lwidth'"  == "" 	local lwidth  0.15
 	
-	if "`lwidth'" == "" local lwidth 0.25
-
+	if "`lcolor'"  == "" {
+		if "`fill'" != "" {
+			local lcolor  white
+		}
+		else {
+			local lcolor  gs8
+		}
+	}
+	
+	
+	if "`ticksize'"  == "" 	local ticksize   1
+	if "`labcolor'" == "" 	local labcolor  black
+	
 	// point colors
 	
 	
@@ -387,17 +399,16 @@ qui {
 		}
 	}
 	else {
-			local mypoints (scatter _yvar _xvar, msize(`msize') mc(`mcolor'%`malpha') mlc(`mlcolor') mlwidth(`mlwidth')  mlab(mval)) 
+			local mypoints (scatter _yvar _xvar, msymbol(`msymbol') msize(`msize') mc(`mcolor') mlc(`mlcolor') mlwidth(`mlwidth')  mlab(mval)) 
 	}
 	
 	
 	**** generate the triangles ****
     
-	if "`lcolor'" == "" local lcolor black
+
 	
 	if "`fill'"!="" {
-	
-		local lcolor white
+
 	
 		append using `_triangles'
 		gen _i = _n
@@ -419,6 +430,8 @@ qui {
 
 	}	
 	
+	
+	
 	*********************
 	**** Final graph ****
 	*********************
@@ -430,9 +443,9 @@ qui {
 		local labclr3 `r(p3)'
 	}
 	else {
-		local labclr1 black
-		local labclr2 black
-		local labclr3 black
+		local labclr1 `labcolor'
+		local labclr2 `labcolor'
+		local labclr3 `labcolor'
 	}
 	
 	if "`lines'" != "" {
@@ -447,9 +460,9 @@ qui {
 		(pcspike yR xR yL xL if xL!=0   , lc("`r(p1)'")	lw(`lwidth'))	///
 		(pcspike yB xB yL xL if xB!=1	, lc("`r(p2)'")	lw(`lwidth'))	///
 		(pcspike yR_spike xR_spike yB xB if yR!=0, lc("`r(p3)'")	lw(`lwidth'))	///
-		(connected yR xR, mlab(_Rlab) mlabpos(3)  mc("`labclr1'") mlabc("`labclr1'") lc("`r(p1)'") lw(`lwidth') msize(`msize') msymbol(|) msymangle( 90))	///
-		(connected yL xL, mlab(_Llab) mlabpos(11) mc("`labclr2'") mlabc("`labclr2'") lc("`r(p2)'") lw(`lwidth') msize(`msize') msymbol(|) msymangle( 30))	///
-		(connected yB xB, mlab(_Blab) mlabpos(7)  mc("`labclr3'") mlabc("`labclr3'") lc("`r(p3)'") lw(`lwidth') msize(`msize') msymbol(|) msymangle(-30))	///
+		(connected yR xR, mlab(_Rlab) mlabpos(3)  mc("`labclr1'") mlabc("`labclr1'") lc("`r(p1)'") lw(`lwidth') msize(`ticksize') msymbol(|) msymangle( 90))	///
+		(connected yL xL, mlab(_Llab) mlabpos(11) mc("`labclr2'") mlabc("`labclr2'") lc("`r(p2)'") lw(`lwidth') msize(`ticksize') msymbol(|) msymangle( 30))	///
+		(connected yB xB, mlab(_Blab) mlabpos(7)  mc("`labclr3'") mlabc("`labclr3'") lc("`r(p3)'") lw(`lwidth') msize(`ticksize') msymbol(|) msymangle(-30))	///
 		(scatter ty tx in 1, mlab(tl) mlabpos(0) mc(none) mlabsize(3) mlabcolor("`labclr3'")				  ) ///	
 		(scatter ty tx in 2, mlab(tl) mlabpos(0) mc(none) mlabsize(3) mlabcolor("`labclr1'") mlabangle(-60) ) ///	
 		(scatter ty tx in 3, mlab(tl) mlabpos(0) mc(none) mlabsize(3) mlabcolor("`labclr2'") mlabangle( 60) ) ///	
