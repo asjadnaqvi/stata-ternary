@@ -110,14 +110,22 @@ Naqvi, A. (2024). Stata package "ternary" version 1.0. Release date 28 August 20
 
 ## Examples
 
-Set up the data:
+
+Users can either copy the files locally 
+
+```stata
+foreach x in NUTS2_edu NUTS2_tourstay NUTS3_gva NUTS3_pop {
+	copy "https://github.com/asjadnaqvi/stata-ternary/raw/main/data/`x'.dta" "`x'.dta", replace
+}
+
+```
+
+
+or load them directly from the server:
+
 
 ```stata
 use "https://github.com/asjadnaqvi/stata-ternary/blob/main/data/NUTS3_pop.dta?raw=true", clear
-
-lab var y15prop "Age 0-14"
-lab var y64prop "Age 15-64"
-lab var y99prop "Age 65+"
 ```
 
 Test a basic figure
