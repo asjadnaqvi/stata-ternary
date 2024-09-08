@@ -358,7 +358,6 @@ quietly {
 					local id = 2 * `counter' + `i'
 				}		
 
-
 				gen double A1 = abs((_xtr*(`y1' - `y2') + `x2'*(`y2' - _ytr) + `x2'*(_ytr - `y1')) ) if missing(tri_id)
 				gen double A2 = abs((`x1'*(_ytr - `y2') + _xtr*(`y2' - `y1') + `x2'*(`y1' - _ytr)) ) if missing(tri_id)
 				gen double A3 = abs((`x1'*(`y1' - _ytr) + `x2'*(_ytr - `y1') + _xtr*(`y1' - `y1')) ) if missing(tri_id)
