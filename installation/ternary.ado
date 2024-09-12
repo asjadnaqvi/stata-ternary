@@ -1,6 +1,7 @@
-*! ternary v1.0 (28 Aug 2024)
+*! ternary v1.1 (12 Sep 2024)
 *! Asjad Naqvi (asjadnaqvi@gmail.com)
 
+* v1.1 (12 Sep 2024) : Marker label options added. Normalize option added.
 * v1.0 (28 Aug 2024) : Beta release
 
 
@@ -13,8 +14,12 @@ program ternary, sortpreserve
 		[ msize(string) malpha(real 90) MLColor(string) MLWIDth(string) MColor(string) MSYMbol(string) TICKSize(string) LABColor(string) ]	///
 		[ colorR(string) colorL(string) colorB(string)  ] ///
 		[ fill points lines labels 	 ]	///
-		[ zoom  * ]
+		[ zoom  * ]	///
+		[ MLABel(varlist max=1) MLABSize(string) MLABColor(string) MLABPOSition(string) NORMalize(string) ]
 	
+	
+	// add support for mlabel()
+	// fix zoom
 	 
 	marksample touse, strok
 	
@@ -22,6 +27,12 @@ program ternary, sortpreserve
 	if "`colorB'" == "" local colorB #DCB600
 	if "`colorR'" == "" local colorR #FF6CFF
 	if "`colorL'" == "" local colorL #00E0DF	
+	
+	
+	if "`normalize'" != "" & "`normalize'" != "1" & "`normalize'" != "100" {
+		di as error "Valid normalize() options are 1 or 100."
+		exit
+	}
 	
 	
 	if "`points'" != "" | "`fill'" != "" {
@@ -50,12 +61,11 @@ program ternary, sortpreserve
 	}
 
 
-	
 quietly {	
 	preserve
 	
 	keep if `touse'
-	keep `varlist'
+	keep `varlist' `mlabel'
 
 	foreach x of local varlist {
 		if "`: var label `x''" != "" {
@@ -76,25 +86,44 @@ quietly {
 	
 	
 	// run checks
-	
+
 	egen _check = rowtotal(_R _L _B)
 	
-	summ _check, meanonly
 	
-	if round(`r(max)') == 1 {
-		noisily display in yellow "Normalization of 1 assumed."
+	if "`normalize'" == "1" {
+		replace _R = _R / _check		
+		replace _L = _L / _check
+		replace _B = _B / _check
 		local normlvl = 1
+		
 	}
-	else if round(`r(max)') == 100 {
-		noisily display in yellow "Normalization of 100 assumed."
+	else if "`normalize'" == "100"  { // default
+		replace _R = (_R / _check) * 100
+		replace _L = (_L / _check) * 100
+		replace _B = (_B / _check) * 100		
 		local normlvl = 100
+		
 	}
 	else {
-		noisily display in red "Variables do not add up to 1 or 100."
-		exit
+		summ _check, meanonly
+		
+		if round(`r(max)') == 1 {
+			noisily display in yellow "Normalization of 1 assumed."
+			local normlvl = 1
+		}
+		else if round(`r(max)') == 100 {
+			noisily display in yellow "Normalization of 100 assumed."
+			local normlvl = 100
+		}
+		else {
+			noisily display in red "Variables do not add up to 1 or 100. Either normalize the variables or use option {ul:norm(1)} or {ul:norm(100)}."
+			exit
+		}
 	}
 	
-	if "`format'"  == "" {
+	drop _check
+	
+	if "`format'" == "" {
 		if `normlvl' == 1 	local format  %5.2f 
 		if `normlvl' == 100 local format  %6.0f 
 	} 	
@@ -102,7 +131,6 @@ quietly {
 	replace _L = _L / `normlvl'
 	replace _R = _R / `normlvl'
 	replace _B = _B / `normlvl'
-	
 	
 	
 	if "`zoom'" != "" {
@@ -121,7 +149,7 @@ quietly {
 		}
 		
 		// normalize
-		
+
 		replace `myvar' = (`myvar' - `mymin') / (1 - `mymin')
 		
 		local others "_R _L _B" 
@@ -213,12 +241,9 @@ quietly {
 	gen double xL = .
 	gen _Llab = ""
 	
-
 	forval i = 1/`=`cuts' + 1' {
 		
 		local myval = (`i' - 1) / `cuts'
-		
-		
 		
 		replace yL = `myval' * sqrt(3) / 2 			in `i'
 		replace xL = yL / tan(60 * _pi / 180) 		in `i'
@@ -257,10 +282,6 @@ quietly {
 	replace ty =  0.5 in 3
 	replace tl = "`: variable label _L'" in 3
 	
-	
-	gen mval = ""
-	
-	if "`showlabel'" != "" gen mval = string(_B, "`format'") + ", " + string(_L, "`format'")  + ", " + string_R, "`format'") 	
 	
 	**** return color triangles
 	
@@ -329,7 +350,7 @@ quietly {
 				
 				replace tri_id = `id' if missing(tri_id) & temp_`id'==1
 				
-				cap drop A1 A2 A3 temp_`id'		
+				drop A1 A2 A3 temp_`id'		
 				
 				local ++j
 				local ++counter
@@ -366,7 +387,7 @@ quietly {
 				
 				replace tri_id = `id' if missing(tri_id) & temp_`id'==1
 				
-				cap drop A1 A2 A3 temp_`id'					
+				drop A1 A2 A3 temp_`id'					
 
 				local ++j
 				local ++counter
@@ -393,22 +414,19 @@ quietly {
 			
 			colorpalette `myclr', nograph
 			
-			local mypoints `mypoints' (scatter _yvar _xvar if tri_id==`x', msize(`msize') mc("`r(p1)'%`malpha'") mlc(`mlcolor') mlwidth(`mlwidth') mlab(mval)) 
+			local mypoints `mypoints' (scatter _yvar _xvar if tri_id==`x', msize(`msize') mcolor("`r(p1)'%`malpha'") mlcolor(`mlcolor') mlwidth(`mlwidth') mlabel(`mlabel') mlabcolor(`mlabcolor') mlabsize(`mlabsize') mlabpos(`mlabposition') ) 
 				
 		}
 	}
 	else {
-			local mypoints (scatter _yvar _xvar, msymbol(`msymbol') msize(`msize') mc(`mcolor') mlc(`mlcolor') mlwidth(`mlwidth')  mlab(mval)) 
+			local mypoints (scatter _yvar _xvar, msymbol(`msymbol') msize(`msize') mcolor(`mcolor') mlcolor(`mlcolor') mlwidth(`mlwidth')  mlabel(`mlabel') mlabcolor(`mlabcolor') mlabsize(`mlabsize') mlabpos(`mlabposition') ) 
 	}
 	
 	
 	**** generate the triangles ****
-    
-
 	
 	if "`fill'"!="" {
 
-	
 		append using `_triangles'
 		gen _i = _n
 		
@@ -428,7 +446,6 @@ quietly {
 		}
 
 	}	
-	
 	
 	
 	*********************
