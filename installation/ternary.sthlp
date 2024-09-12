@@ -12,7 +12,7 @@
 
 {p 8 15 2}
 {cmd:ternary} {it:varL varR varB} {ifin}, 
-                {cmd:[} {cmd:cuts}({it:num}) {cmd:zoom} {cmdab:norm:alize}({it:1} or {it:100}) {cmd:fill} {cmd:points} {cmd:lines} {cmd:labels} {cmd:colorL}({it:str}) {cmd:colorR}({it:str}) {cmd:colorB}({it:str})
+                {cmd:[} {cmd:cuts}({it:num}) {cmd:zoom} {cmdab:norm:alize}({it:1}|{it:100}) {cmd:fill} {cmd:points} {cmd:lines} {cmd:labels} {cmd:colorL}({it:str}) {cmd:colorR}({it:str}) {cmd:colorB}({it:str})
                   {cmdab:lw:idth}({it:str}) {cmdab:msym:bol}({it:str}) {cmd:msize}({it:str}) {cmdab:mc:olor}({it:str}) {cmdab:mlc:olor}({it:str}) {cmdab:mlw:idth}({it:str}) {cmdab:labc:olor}({it:str}) {cmdab:ticks:ize}({it:str}) 
 				  {cmdab:mlab:el}({it:var}) {cmdab:mlabs:ize}({it:str}) {cmdab:mlabc:olor}({it:str})  {cmdab:mlabpos:ition}({it:str})  
 				  *                                  
@@ -32,8 +32,8 @@ The options are described as follows:
 {p2coldent : {opt zoom}}Zoom into the data based on the data extent of the bottom layer. This option will be enhanced further in later releases. Use this option if 
 the data points are bunched in very few triangles. Rather than increasing the cuts to show more variation, {opt zoom} rescales the axes while keeping the cuts the same.{p_end}
 
-{p2coldent : {opt zoom(1 | 100)}}Normalize the data on a 1 or a 100 scale using variable totals. 
-If this is not specified, the program will try and detect the normalization level.{p_end}
+{p2coldent : {opt norm:alize(1|100)}}Normalize the data on a 1 ({opt norm(1)}) or a 100 ({opt norm(100)}) scale using the row totals of the {opt varlist}. 
+If this is not specified, the program will auto-detect the normalization level.{p_end}
 
 
 {p 4 4 2}{it:{ul:Colors}}
