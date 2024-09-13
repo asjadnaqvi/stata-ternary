@@ -1,11 +1,11 @@
 *! ternary v1.1 (12 Sep 2024)
 *! Asjad Naqvi (asjadnaqvi@gmail.com)
 
-* v1.1 (12 Sep 2024) : Marker label options added. Normalize option added.
+* v1.1 (12 Sep 2024) : Marker label options added. Normalize option added. Better zoom
 * v1.0 (28 Aug 2024) : Beta release
 
 
-program ternary, sortpreserve  
+program ternary, // sortpreserve  
 	
 	version 15 
 	
@@ -18,8 +18,6 @@ program ternary, sortpreserve
 		[ MLABel(varlist max=1) MLABSize(string) MLABColor(string) MLABPOSition(string) NORMalize(string) ]
 	
 	
-	// add support for mlabel()
-	// fix zoom
 	 
 	marksample touse, strok
 	
@@ -119,6 +117,11 @@ quietly {
 			noisily display in red "Variables do not add up to 1 or 100. Either normalize the variables or use option {ul:norm(1)} or {ul:norm(100)}."
 			exit
 		}
+		
+		replace _L = _L / `normlvl'
+		replace _R = _R / `normlvl'
+		replace _B = _B / `normlvl'
+		
 	}
 	
 	drop _check
@@ -128,20 +131,20 @@ quietly {
 		if `normlvl' == 100 local format  %6.0f 
 	} 	
 	
-	replace _L = _L / `normlvl'
-	replace _R = _R / `normlvl'
-	replace _B = _B / `normlvl'
+	
+	local mymax = 1
+	local mymin = 0
 	
 	
 	if "`zoom'" != "" {
-		// determine the variable with the highest min
 		local mymin = 0
 		
 		local i = 1
 		foreach x in _R _L _B {
 			summ `x', meanonly
+			
 			if `mymin' < `r(min)' {
-				local mymin = (floor(`r(min)' * `cuts') / `cuts')
+				local mymin = (floor(`r(min)' * 100) / 100)
 				local myvar `x'
 			}
 			
@@ -149,29 +152,41 @@ quietly {
 		}
 		
 		// normalize
-
-		replace `myvar' = (`myvar' - `mymin') / (1 - `mymin')
-		
 		local others "_R _L _B" 
 		local remove "`myvar'"
+		
+		local mymax = 1
 		
 		local others : list others - remove
 		
 		foreach x of local others {
-			replace `x' = `x' / (1 - `mymin')
+			summ `x', meanonly
+			
+			if `mymax' > `r(min)' {
+				local mymax = (floor(`r(min)' * 100) / 100)
+			}
 		}
+		
+		local mymax = 1 - `mymax'
+		
+		foreach x of local others {
+			replace `x' = (`x' - (1 - `mymax')) / (`mymax' - `mymin') 
+		}
+
+		replace `myvar' = (`myvar' - `mymin' ) / (`mymax' - `mymin') 
+				
 	}	
 
 
 	// barycentric coordinates	
 	gen double _yvar = _R * sqrt(3) / 2 
-	gen double _xvar = 1 - (_R/2 + _L) 
+	gen double _xvar = 1 -  (_R/2 + _L) 
 
 
 	// add rows if required
 	if _N < `=`cuts' + 5' set obs `=`cuts' + 5'
 	
-	local diff = 1 / `cuts'
+	local diff = (`mymax' - `mymin') / `cuts'
 	
 	*** bottom
 	gen double yB = .
@@ -190,10 +205,10 @@ quietly {
 		
 		if "`zoom'" != "" {
 			if `myvar' == _B {
-				replace _Blab = string( ((1 - `mymin')*`myval' + `mymin') * `normlvl' , "`format'") in `i'
+				replace _Blab = string( ((`mymax' - `mymin')*`myval' + `mymin') * `normlvl' , "`format'") in `i'
 			}
 			else {
-				replace _Blab = string( (`myval' * (1 - `mymin'))* `normlvl', "`format'") in `i'
+				replace _Blab = string( (`myval' * (`mymax' - `mymin') + (1 - `mymax'))* `normlvl', "`format'") in `i'
 			}
 		}
 		else {
@@ -220,10 +235,10 @@ quietly {
 		
 		if "`zoom'" != "" {
 			if `myvar' == _R {
-				replace _Rlab = string( ((1 - `mymin')*`myval' + `mymin') * `normlvl' , "`format'") in `i'
+				replace _Rlab = string( ((`mymax' - `mymin')*`myval' + `mymin') * `normlvl' , "`format'") in `i'
 			}
 			else {
-				replace _Rlab = string( (`myval' * (1 - `mymin') ) * `normlvl', "`format'") in `i'
+				replace _Rlab = string( (`myval' * (`mymax' - `mymin')  + (1 - `mymax')) * `normlvl', "`format'") in `i'
 			}
 		}
 		else {
@@ -251,10 +266,10 @@ quietly {
 		
 		if "`zoom'" != "" {
 			if `myvar' == _L {
-				replace _Llab = string( ((1 - `mymin')*(1 - `myval') + `mymin') * `normlvl' , "`format'") in `i'
+				replace _Llab = string( ((`mymax' - `mymin')*(1 - `myval') + `mymin') * `normlvl' , "`format'") in `i'
 			}
 			else {
-				replace _Llab = string( ((1 - `myval')*(1 - `mymin')) * `normlvl' , "`format'") in `i'
+				replace _Llab = string( ((1 - `myval')*(`mymax' - `mymin') + (1 - `mymax')) * `normlvl' , "`format'") in `i'
 			}
 		}
 		else {
@@ -263,6 +278,8 @@ quietly {
 	}
 	
 	
+	
+
 	// generate the title labels
 	gen tx = .
 	gen ty = .
@@ -322,7 +339,7 @@ quietly {
 		replace _xtr = _xtr * `cuts'
 		
 		
-		*** up triangles
+		*** up
 		local counter = 1
 
 		forval i = 1/`cuts' {
@@ -358,7 +375,7 @@ quietly {
 		}	
 
 
-		*** down triangles
+		*** down
 		local counter = 1
 
 		forval i = 1/`=`cuts'-1' {

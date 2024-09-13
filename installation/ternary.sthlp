@@ -29,8 +29,7 @@ The options are described as follows:
 
 {p2coldent : {opt cuts(num)}}Total number of evenly-spaced segments in the triangle. Default is {opt cuts(5)}.{p_end}
 
-{p2coldent : {opt zoom}}Zoom into the data based on the data extent of the bottom layer. This option will be enhanced further in later releases. Use this option if 
-the data points are bunched in very few triangles. Rather than increasing the cuts to show more variation, {opt zoom} rescales the axes while keeping the cuts the same.{p_end}
+{p2coldent : {opt zoom}}Zoom into the data based on the data min/max extents. Use this option if the data points are clustered in a part of the triangle.{p_end}
 
 {p2coldent : {opt norm:alize(1|100)}}Normalize the data on a 1 ({opt norm(1)}) or a 100 ({opt norm(100)}) scale using the row totals of the {opt varlist}. 
 If this is not specified, the program will auto-detect the normalization level.{p_end}

@@ -319,6 +319,7 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-ternary/issues) to re
 **v1.1 (12 Sep 2024)**
 - Added `norm()` option which can be used to normalize the data to 1 (`norm(1)`) or 100 (`norm(100)`).
 - Added marker label options: `mlabel()`, `mlabcolor()`, `mlabposition()`, `mlabsize()`.
+- Better zoom option.
 - Minor code cleanups.
 
 **v1.0 (28 Aug 2024)**
