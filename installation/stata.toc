@@ -1,5 +1,8 @@
-v 1.0
+v 1.2
 d 'TERNARY': A Stata package for ternary plots
+d
+d Distribution-Date: 20250312
+d
 d Asjad Naqvi
 d asjadnaqvi@gmail.com
 d https://medium.com/the-stata-guide
