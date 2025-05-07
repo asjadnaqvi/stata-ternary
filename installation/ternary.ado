@@ -160,10 +160,11 @@ quietly {
 		replace _B = _B / `normlvl'
 		
 	}
-	
-	
+		
 	if "`format'" == ""  local format  %6.2f 
 	
+	
+	local zbool = 0
 	local mymax = 1
 	local mymin = 0
 	
@@ -182,8 +183,8 @@ quietly {
 			local ++i
 		}
 		
-		local mymin = max(0, `mymin' * (1 - (`pad' / 100))) // pad
 		
+		local mymin = max(0, `mymin' * (1 - (`pad' / 100))) // pad
 		
 		// normalize
 		local others "_R _L _B" 
@@ -196,25 +197,31 @@ quietly {
 		foreach x of local others {
 			summ `x', meanonly
 			
-			if `mymax' > `r(min)' {
+			if `mymax' > `r(min)'  {
 				local mymax = `r(min)'
 			}
 		}
+		
 		
 		local mymax = min(1, `mymax' * (1 + (`pad' / 100))) // pad
 		
 		local mymax = 1 - `mymax'
 		
-		foreach x of local others {
-			replace `x' = (`x' - (1 - `mymax')) / (`mymax' - `mymin') 
+		
+		if `mymax' == 1 & `mymin' == 0 {
+			break
+			local zbool = 1
 		}
-
-		replace `myvar' = (`myvar' - `mymin' ) / (`mymax' - `mymin') 
-				
+		else {
+			foreach x of local others {
+				replace `x' = (`x' - (1 - `mymax')) / (`mymax' - `mymin') 
+			}
+			
+			replace `myvar' = (`myvar' - `mymin' ) / (`mymax' - `mymin') 
+		}
 	}	
 
 	
-
 	// barycentric coordinates	
 	gen double _yvar = _R * sqrt(3) / 2 
 	gen double _xvar = 1 -  (_R/2 + _L) 
@@ -240,7 +247,7 @@ quietly {
 		
 		local myval = (`i' - 1) / `cuts'
 		
-		if "`zoom'" != "" {
+		if "`zoom'" != "" & `zbool' == 0 {
 			if `myvar' == _B {
 				replace _Blab = string( ((`mymax' - `mymin')*`myval' + `mymin') * `normlvl' , "`format'") in `i'
 			}
@@ -270,7 +277,7 @@ quietly {
 		replace xR = 1 - (yR / tan(60 * _pi / 180)) in `i'
 		
 		
-		if "`zoom'" != "" {
+		if "`zoom'" != ""  & `zbool' == 0 {
 			if `myvar' == _R {
 				replace _Rlab = string( ((`mymax' - `mymin')*`myval' + `mymin') * `normlvl' , "`format'") in `i'
 			}
@@ -301,7 +308,7 @@ quietly {
 		replace xL = yL / tan(60 * _pi / 180) 		in `i'
 		
 		
-		if "`zoom'" != "" {
+		if "`zoom'" != ""  & `zbool' == 0 {
 			if `myvar' == _L {
 				replace _Llab = string( ((`mymax' - `mymin')*(1 - `myval') + `mymin') * `normlvl' , "`format'") in `i'
 			}
