@@ -64,9 +64,9 @@ graph set window fontface "Arial Narrow"
 The syntax for the latest version is as follows:
 
 ```stata
-        ternary varL varR varB [if] [in], [ by(var) cuts(num) zoom pad(num) normalize(1|100) nofill points lines labels colorL(str) colorR(str)
-               colorB(str) lwidth(str) msymbol(str) msize(str) mcolor(str) mlcolor(str) mlwidth(str) labcolor(str) ticksize(str) mlabel(var)
-               mlabsize(str) mlabcolor(str) mlabposition(str) scale format(fmt) palette(str) legend(options) * ]
+ternary varL varR varB [if] [in], [ by(var) cuts(num) zoom pad(num) normalize(1|100) nofill points lines labels colorL(str) colorR(str)
+	colorB(str) lwidth(str) msymbol(str) msize(str) mcolor(str) mlcolor(str) mlwidth(str) labcolor(str) ticksize(str) mlabel(var)
+	mlabsize(str) mlabcolor(str) mlabposition(str) scale format(fmt) palette(str) legend(options) * ]
 ```
 
 See the help file `help ternary` for details.
