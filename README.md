@@ -12,8 +12,8 @@
 ---
 
 
-# ternary v1.2
-(12 Mar 2025)
+# ternary v1.3
+(07 May 2025)
 
 This package provides the ability to draw tri-variate plots in Stata.
 
@@ -28,7 +28,7 @@ The SSC version (**v1.2**):
 ssc install ternary, replace
 ```
 
-Or it can be installed from GitHub (**v1.2**):
+Or it can be installed from GitHub (**v1.3**):
 
 ```stata
 net install ternary, from("https://raw.githubusercontent.com/asjadnaqvi/stata-ternary/main/installation/") replace
@@ -64,14 +64,16 @@ graph set window fontface "Arial Narrow"
 The syntax for the latest version is as follows:
 
 ```stata
-        ternary varL varR varB [if] [in], [ cuts(num) zoom fill points lines labels colorL(str) colorR(str) colorB(str) lwidth(str) msymbol(str) msize(str) mcolor(str) mlcolor(str) mlwidth(str) labcolor(str) ticksize(str) *  ]
+        ternary varL varR varB [if] [in], [ by(var) cuts(num) zoom pad(num) normalize(1|100) nofill points lines labels colorL(str) colorR(str)
+               colorB(str) lwidth(str) msymbol(str) msize(str) mcolor(str) mlcolor(str) mlwidth(str) labcolor(str) ticksize(str) mlabel(var)
+               mlabsize(str) mlabcolor(str) mlabposition(str) scale format(fmt) palette(str) legend(options) * ]
 ```
 
 See the help file `help ternary` for details.
 
 The most basic use is as follows:
 
-```
+```stata
 ternary varL varR varB
 ```
 
@@ -107,7 +109,7 @@ use "https://github.com/asjadnaqvi/stata-ternary/blob/main/data/NUTS3_pop.dta?ra
 
 Test a basic figure
 
-```
+```stata
 ternary y15prop y64prop y99prop
 ```
 
@@ -116,7 +118,7 @@ ternary y15prop y64prop y99prop
 
 Rearrange the variables and remove the fill
 
-```
+```stata
 ternary  y99prop y15prop y64prop, nofill
 ```
 
@@ -306,6 +308,58 @@ ternary y_Y_GE65 y_Y15_64 y_Y_LT15 if ctry=="DE", zoom lw(0.08) scale  norm(100)
 <img src="/figures/ternary19.png" width="100%">
 
 
+### v1.3 (by categories)
+
+Generate a region variable for EU countries:
+
+```stata
+
+*** taken from https://en.wikipedia.org/wiki/EuroVoc
+
+gen region = .
+
+replace region = 1 if inlist(ctry, "AT", "BE", "FR", "DE", "IE" , "LI", "LU", "MK")
+replace region = 1 if inlist(ctry, "NL", "CH", "UK")
+
+replace region = 2 if inlist(ctry, "DK", "IS", "EE", "FI", "LV", "LT", "SI", "NO")
+
+replace region = 3 if inlist(ctry, "CY", "EL", "IT", "MT", "PT" , "ES", "TR")
+
+replace region = 4 if inlist(ctry, "AL", "CZ", "HR", "HU", "PL", "RO", "RS")
+replace region = 4 if inlist(ctry, "SE", "SK", "MK", "ME", "BG")
+
+lab de region 4 "Central and Eastern Europe" 2 "Northern Europe" 3 "Southern Europe" 1 "Western Europe", replace
+lab val region region
+
+```
+
+```stata
+ternary y_Y_GE65 y_Y15_64 y_Y_LT15 , by(region) cuts(4)  zoom lw(0.08) norm(100) mcolor(white%70) msize(1.8) pad(2)
+```
+
+<img src="/figures/ternary20_1.png" width="100%">
+
+
+```stata
+ternary y_Y_GE65 y_Y15_64 y_Y_LT15 , by(region) cuts(4) nofill zoom lw(0.08) norm(100) mcolor(white%70) msize(1.2) pad(2)
+```
+
+<img src="/figures/ternary20_2.png" width="100%">
+
+
+```stata
+ternary y_Y_GE65 y_Y15_64 y_Y_LT15 , by(region) cuts(2) zoom lw(0.08) norm(100) msymbol(triangle circle square diamond) msize(0.2) pad(2) nofill scale legend(size(2) pos(6) rows(2))
+```
+
+<img src="/figures/ternary20_3.png" width="100%">
+
+
+```stata
+ternary y_Y_GE65 y_Y15_64 y_Y_LT15, by(region) cuts(2) nofill malpha(100) zoom lw(0.08) norm(100) msymbol(circle) msize(1) pad(2) palette(burd) mlcolor(white) mlwidth(0.06)
+```
+
+<img src="/figures/ternary20_4.png" width="100%">
+
 
 
 ## Feedback
@@ -314,6 +368,13 @@ Please open an [issue](https://github.com/asjadnaqvi/stata-ternary/issues) to re
 
 
 ## Change log
+
+**v1.3 (07 May 2025)**
+- Option `by()` added to allow markers to vary by categories.
+- Option `msymbol()` now accepts lists. If there are fewer markers defined than the by categories, then the last marker will be used for the remaining.
+- Option `palette()` added to customize marker colors.
+- Option `legend()` added to control how `by()` legends are drawn.
+- Various bug fixes.
 
 **v1.2 (12 Mar 2025)**
 - Option `fill` is now the default and has been removed. Instead `nofill` has been added to remove the colors. This aligns the package to also how it was intended to be drawn by default.
